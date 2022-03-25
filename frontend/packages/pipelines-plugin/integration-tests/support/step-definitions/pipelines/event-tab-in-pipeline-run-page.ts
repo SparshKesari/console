@@ -26,6 +26,7 @@ When('pipeline named {string} is available with pipeline run', (pipelineName: st
   tasksPage.openPipelineSidebar();
   cy.get('[data-test-id="dropdown-button"]').click();
   cy.get('[data-test-dropdown-menu="pipeline"]').click();
+  cy.get('#form-radiobutton-editorType-form-field').click();
   cy.get('#form-input-formData-name-field')
     .clear()
     .type(pipelineName);
