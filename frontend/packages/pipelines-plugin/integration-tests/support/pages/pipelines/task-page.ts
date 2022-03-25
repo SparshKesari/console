@@ -35,6 +35,11 @@ export const tasksPage = {
       .contains('Pipelines')
       .click();
   },
+  closePipelineSidebar: () => {
+    cy.get('[data-test=nav]')
+      .contains('Pipelines')
+      .click();
+  },
   openPipelinePage: () => {
     cy.get('[data-quickstart-id="qs-nav-pipelines"]')
       .eq(1)
@@ -47,5 +52,9 @@ export const tasksPage = {
       .type(name);
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000);
+  },
+  clickOnCreatePipeline: () => {
+    cy.get('[data-test-id="dropdown-button"]').click();
+    cy.get('[data-test-dropdown-menu="pipeline"]').click();
   },
 };

@@ -23,17 +23,16 @@ Given('user is at administrator perspective', () => {
 When('pipeline named {string} is available with pipeline run', (pipelineName: string) => {
   tasksPage.openPipelineSidebar();
   tasksPage.openPipelinePage();
-  tasksPage.openPipelineSidebar();
-  cy.get('[data-test-id="dropdown-button"]').click();
-  cy.get('[data-test-dropdown-menu="pipeline"]').click();
-  cy.get('#form-radiobutton-editorType-form-field').click();
-  cy.get('#form-input-formData-name-field')
+  tasksPage.closePipelineSidebar();
+  tasksPage.clickOnCreatePipeline();
+  cy.get(pipelineBuilderPO.formView.switchToFormView).click();
+  cy.get(pipelineBuilderPO.formView.name)
     .clear()
     .type(pipelineName);
   cy.get('[data-test="task-list"]').click();
-  cy.get('[data-test="quick-search-bar"]').type('kn');
+  cy.get(pipelineBuilderPO.formView.quickSearch).type('kn');
   cy.get('[data-test="task-cta"]').click();
-  cy.get('[data-test-id="submit-button"]').click();
+  cy.get(pipelineBuilderPO.create).click();
   actionsDropdownMenu.selectAction('Start');
 });
 
@@ -46,7 +45,7 @@ When('user clicks on Pipelines', () => {
 });
 
 When('user goes to Pipeline Runs tab', () => {
-  cy.get('[data-test-id="horizontal-link-PipelineRuns"]').click();
+  cy.get(pipelineDetailsPO.pipelineRunsTab).click();
 });
 
 When('user clicks on pipeline run for pipeline {string}', (pipelineName: string) => {
@@ -75,6 +74,8 @@ When('task named {string} is available with task run', () => {
   tasksPage.clearYAMLEditor();
   tasksPage.setEditorContent('testData/task-creation-with-yaml/new-task.yaml');
   tasksPage.submitTaskYAML();
+  tasksPage.closePipelineSidebar();
+  tasksPage.openPipelineSidebar();
   tasksPage.openPipelinePage();
   cy.get('[data-test-id="dropdown-button"]').click();
   cy.get('[data-test-dropdown-menu="pipeline"]').click();
