@@ -1,9 +1,17 @@
 import { When, Then, Given } from 'cypress-cucumber-preprocessor/steps';
+import { detailsPage } from '@console/cypress-integration-tests/views/details-page';
 import { modal } from '@console/cypress-integration-tests/views/modal';
-import { devNavigationMenu } from '@console/dev-console/integration-tests/support/constants';
+import {
+  devNavigationMenu,
+  pageTitle,
+} from '@console/dev-console/integration-tests/support/constants';
 import { navigateTo } from '@console/dev-console/integration-tests/support/pages';
 import { pipelineActions } from '../../constants';
-import { pipelineRunDetailsPO, pipelinesPO } from '../../page-objects/pipelines-po';
+import {
+  pipelineRunDetailsPO,
+  pipelinesPO,
+  pipelineDetailsPO,
+} from '../../page-objects/pipelines-po';
 import { pipelinesPage, startPipelineInPipelinesPage } from '../../pages';
 import { pipelineDetailsPage } from '../../pages/pipelines/pipelineDetails-page';
 import { pipelineRunDetailsPage } from '../../pages/pipelines/pipelineRun-details-page';
@@ -78,4 +86,76 @@ Given(
 Given('user is at Task Runs tab of pipeline run with all kind of Workspaces', () => {
   // pipelinesPage.selectPipelineRun(pipelineName);
   pipelineRunDetailsPage.selectTab('TaskRuns');
+});
+
+Given(
+  'user is at PipelineRuns tab with pipeline runs for pipeline {string}',
+  (pipelineName: string) => {
+    detailsPage.titleShouldContain(pageTitle.Pipelines);
+    pipelinesPage.selectPipeline(pipelineName);
+    cy.get(pipelineDetailsPO.pipelineRunsTab).click();
+  },
+);
+
+Given('user clicks on Pipeline Run for {string}', (pipelineName: string) => {
+  cy.get(`[data-test-id^="${pipelineName}"]`).click();
+});
+
+Given('user clicks kebab menu of a task run', () => {
+  cy.get(pipelinesPO.pipelinesTable.kebabMenu).click();
+});
+
+Given('user clicks on TaskRuns tab', () => {
+  cy.get(pipelineRunDetailsPO.taskRunsTab).click();
+});
+
+Given('user can see kebab menu option Delete TaskRun', () => {
+  cy.get('[data-test-action="Delete TaskRun"]').should('be.visible');
+});
+
+Given('user can see Status and Pods in Details tab', () => {
+  cy.get('[class="co-resource-item"]')
+    .contains('Pod')
+    .should('be.visible');
+
+  cy.get('[data-test="status-text"]').should('be.visible');
+});
+
+Given('user can see Details, Log, YAML and Events tab', () => {
+  cy.get(pipelineRunDetailsPO.taskRunsDetails.columnNames.details).should('be.visible');
+  cy.get(pipelineRunDetailsPO.taskRunsDetails.columnNames.logs).should('be.visible');
+  cy.get(pipelineRunDetailsPO.taskRunsDetails.columnNames.YAML).should('be.visible');
+  cy.get(pipelineRunDetailsPO.taskRunsDetails.columnNames.events).should('be.visible');
+});
+
+Then('user is redirected to Task Run Details tab', () => {
+  // cy.get('[class="pf-c-breadcrumb__item]').should('include.text', 'TaskRun details');
+});
+
+Given('user clicks on a Succeeded task run {string}', (pipelineName: string) => {
+  cy.get(pipelinesPO.pipelinesTable.lastRunStatus)
+    .contains('Succeeded')
+    .should('be.visible');
+  cy.get(`[data-test-id^="${pipelineName}-"]`)
+    .eq(0)
+    .click();
+});
+
+Given('user clicks on a Failed task run', (pipelineName: string) => {
+  cy.get(pipelinesPO.pipelinesTable.lastRunStatus)
+    .contains('Failed')
+    .should('be.visible');
+  cy.get(`[data-test-id^="${pipelineName}-"]`)
+    .eq(0)
+    .click();
+});
+
+Given('user is at pipeline details page with pipeline runs {string}', (pipelineName: string) => {
+  detailsPage.titleShouldContain(pageTitle.Pipelines);
+  pipelinesPage.selectPipeline(pipelineName);
+  // cy.get('[class="pf-c-breadcrumb__item]').should('include.text', 'Pipeline details');
+});
+
+Given('user clicks on pipeline runs tab', () => {
+  cy.get(pipelineDetailsPO.pipelineRunsTab).click();
 });
