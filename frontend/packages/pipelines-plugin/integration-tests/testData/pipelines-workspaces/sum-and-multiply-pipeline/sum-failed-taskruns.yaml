@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  annotations:
+    description: |
+      A simple task that sums the two provided integers
+  creationTimestamp: '2022-03-29T06:45:10Z'
+  generation: 3
+  managedFields:
+    - apiVersion: tekton.dev/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:description': {}
+        'f:spec':
+          .: {}
+          'f:params': {}
+          'f:results': {}
+          'f:steps': {}
+      manager: Mozilla
+      operation: Update
+      time: '2022-03-29T06:45:10Z'
+  name: sum
+  namespace: karthik-test
+  resourceVersion: '2062086'
+  uid: 50e448a9-c39a-49e9-a165-c5351ce7626c
+spec:
+  params:
+    - default: '1'
+      description: The first integer
+      name: a
+      type: string
+    - default: '1'
+      description: The second integer
+      name: b
+      type: string
+  results:
+    - description: The sum of the two provided integers
+      name: sum
+  steps:
+    - image: 'bash:latest'
+      name: sum
+      resources: {}
+      script: |
+        #!/usr/bin/env bash
+        echo 'error-occurred'
+        exit 1
