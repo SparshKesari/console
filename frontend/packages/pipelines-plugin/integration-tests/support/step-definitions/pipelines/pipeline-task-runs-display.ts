@@ -117,7 +117,6 @@ Given('user can see Status and Pods in Details tab', () => {
   cy.get('[class="co-resource-item"]')
     .contains('Pod')
     .should('be.visible');
-
   cy.get('[data-test="status-text"]').should('be.visible');
 });
 
@@ -129,23 +128,11 @@ Given('user can see Details, Log, YAML and Events tab', () => {
 });
 
 Then('user is redirected to Task Run Details tab', () => {
-  // cy.get('[class="pf-c-breadcrumb__item]').should('include.text', 'TaskRun details');
+  cy.get('.pf-c-breadcrumb').should('include.text', 'TaskRun details');
 });
 
-Given('user clicks on a Succeeded task run {string}', (pipelineName: string) => {
-  cy.get(pipelinesPO.pipelinesTable.lastRunStatus)
-    .contains('Succeeded')
-    .should('be.visible');
-  cy.get(`[data-test-id^="${pipelineName}-"]`)
-    .eq(0)
-    .click();
-});
-
-Given('user clicks on a Failed task run', (pipelineName: string) => {
-  cy.get(pipelinesPO.pipelinesTable.lastRunStatus)
-    .contains('Failed')
-    .should('be.visible');
-  cy.get(`[data-test-id^="${pipelineName}-"]`)
+Given('user clicks on task run {string}', (pipelineRunsName: string) => {
+  cy.get(`[data-test-id^="${pipelineRunsName}-"]`)
     .eq(0)
     .click();
 });
@@ -153,9 +140,63 @@ Given('user clicks on a Failed task run', (pipelineName: string) => {
 Given('user is at pipeline details page with pipeline runs {string}', (pipelineName: string) => {
   detailsPage.titleShouldContain(pageTitle.Pipelines);
   pipelinesPage.selectPipeline(pipelineName);
-  // cy.get('[class="pf-c-breadcrumb__item]').should('include.text', 'Pipeline details');
+  cy.get('.pf-c-breadcrumb').should('include.text', 'Pipeline details');
 });
 
 Given('user clicks on pipeline runs tab', () => {
   cy.get(pipelineDetailsPO.pipelineRunsTab).click();
+});
+
+Given(
+  'user is at pipeline details page with pipeline runs for failed task run in {string} namespace',
+  (namespace: string) => {
+    cy.exec(
+      `oc apply -f testData/pipelines-workspaces/sum-and-multiply-pipeline/pipeline-failed-task.yaml -n ${namespace}`,
+    );
+  },
+);
+
+Given('user can see Status, Message and Log snippet in Details tab', () => {
+  cy.get('.odc-taskrun-details__status')
+    .contains('Status')
+    .should('be.visible');
+  cy.get('.odc-taskrun-details__status')
+    .contains('Message')
+    .should('be.visible');
+  cy.get('.odc-taskrun-details__status')
+    .contains('Log snippet')
+    .should('be.visible');
+});
+
+Given(
+  'pipeline run with passed task run is displayed for {string} namespace',
+  (namespace: string) => {
+    cy.exec(
+      `oc apply -f testData/pipelines-workspaces/sum-and-multiply-pipeline/passed-task-run-results.yaml -n ${namespace}`,
+    );
+  },
+);
+
+Given('user scrolls to the Task Run results section', () => {
+  cy.get('[data-test-section-heading="TaskRun results"]');
+});
+
+Given('user clicks on pipeline runs tab for pipeline {string}', (pipelineName: string) => {
+  cy.get(`[data-test-id^="${pipelineName}"]`)
+    .eq(0)
+    .click();
+  pipelineDetailsPage.selectTab('Pipeline Runs');
+});
+
+Given('user clicks on Pipeline Run {string}', (pipelineRunsName: string) => {
+  cy.get(`[data-test-id^="${pipelineRunsName}"]`).click();
+});
+
+Given('user can see Name and Value column under Task Run results', () => {
+  cy.get('[role="grid"]')
+    .contains('Name')
+    .should('be.visible');
+  cy.get('[role="grid"]')
+    .contains('Value')
+    .should('be.visible');
 });
